@@ -17,37 +17,38 @@ function renderBooks() {
 
 // Funkcja inicjująca nasłuchiwanie na dwuklik na elementach .book__image
 function initActions() {
-  const bookImages = document.querySelectorAll('.book__image');
+  const booksList = document.querySelector('.books-list');
 
-  // Przejdź przez każdy element .book__image i dodaj nasłuchiwacz dla dwukliku (dblclick)
-  for (const bookImage of bookImages) {
-    bookImage.addEventListener('dblclick', function (event) {
+  booksList.addEventListener('dblclick', function (event) {
+    const clickedElement = event.target;
+    const isBookImage = clickedElement.offsetParent.classList.contains('book__image');
+
+    if (isBookImage) {
       event.preventDefault();
 
-      // Dodaj klasę 'favorite' do klikniętego elementu
-      bookImage.classList.toggle('favorite');
-
+      // Sprawdź, czy kliknięty element ma klasę 'favorite'
+      const isFavorite = clickedElement.offsetParent.classList.contains('favorite');
       // Pobierz identyfikator książki z atrybutu data-id klikniętego elementu
-      const bookId = bookImage.getAttribute('data-id');
+      const bookId = clickedElement.offsetParent.getAttribute('data-id');
 
-      // Sprawdź, czy identyfikator książki znajduje się już w tablicy favoriteBooks
-      const isFavorite = favoriteBooks.includes(bookId);
-
-      // Jeśli książka nie jest jeszcze w tablicy favoriteBooks, dodaj ją
+      // Dodaj lub usuń klasę 'favorite' w zależności od tego, czy książka jest oznaczona jako ulubiona
       if (!isFavorite) {
+        clickedElement.offsetParent.classList.add('favorite');
+        // Dodaj identyfikator książki do tablicy favoriteBooks
         favoriteBooks.push(bookId);
       } else {
-        // W przeciwnym razie usuń ją z tablicy
+        clickedElement.offsetParent.classList.remove('favorite');
+        // Usuń identyfikator książki z tablicy favoriteBooks
         const index = favoriteBooks.indexOf(bookId);
         if (index !== -1) {
           favoriteBooks.splice(index, 1);
         }
       }
-    });
-  }
+    }
+  });
+
 }
 
-// Wywołaj funkcję renderBooks, aby wyrenderować książki na stronie
 renderBooks();
 
 // Wywołaj funkcję initActions, aby dodać nasłuchiwanie na dwuklik na elementach .book__image
